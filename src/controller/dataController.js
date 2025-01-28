@@ -1,59 +1,55 @@
-let exampleData = [
-   { id: 1, product: "Apple", price: "1.00" },
-   { id: 2, product: "Banana", price: "0.50" },
-   { id: 3, product: "Cherry", price: "0.75" },
-];
+import users from "../users.js";
 
-export const getAllProducts = (req, res) => {
-   res.json(exampleData);
+export const getAllUsers = (req, res) => {
+   res.json(users);
 };
 
-export const getProductById = (req, res) => {
+export const getUserById = (req, res) => {
    const id = parseInt(req.params.id);
-   const product = exampleData.find((product) => product.id === id);
+   const user = users.find((user) => user.id === id);
 
-   if (product) {
-      res.json(product);
+   if (user) {
+      res.json(user);
    } else {
-      res.status(404).send(`Product with id ${id} not found`);
+      res.status(404).send(`User with id ${id} not found`);
    }
 };
 
-export const addProduct = (req, res) => {
-   const newProduct = req.body;
-   if (!newProduct.product || !newProduct.price) {
-      return res.status(400).send("Product and price required");
+export const createUser = (req, res) => {
+   const newUser = req.body;
+   if (!newUser.username || !newUser.password || !newUser.email) {
+      return res.status(400).send("Username, password and email required");
    }
-   newProduct.id = exampleData.length + 1;
-   exampleData.push(newProduct);
-   res.status(201).json(newProduct);
+   newUser.id = users.length + 1;
+   users.push(newUser);
+   res.status(201).json(newUser);
 };
 
-export const deleteProduct = (req, res) => {
+export const deleteUser = (req, res) => {
    const id = parseInt(req.params.id);
-   const index = exampleData.findIndex((product) => product.id === id);
+   const index = users.findIndex((user) => user.id === id);
 
    if (index === -1) {
-      return res.status(404).send(`Product with id ${id} not found`);
+      return res.status(404).send(`User with id ${id} not found`);
    }
 
-   exampleData.splice(index, 1);
-   res.status(204).json({ message: "Product deleted" });
+   users.splice(index, 1);
+   res.status(204).send();
 };
 
-export const updateProduct = (req, res) => {
+export const updateUser = (req, res) => {
    const id = parseInt(req.params.id);
-   const index = exampleData.findIndex((product) => product.id === id);
+   const index = users.findIndex((user) => user.id === id);
 
    if (index === -1) {
-      return res.status(404).send(`Product with id ${id} not found`);
+      return res.status(404).send(`User with id ${id} not found`);
    }
 
-   const updatedProduct = req.body;
-   if (!updatedProduct.name || !updatedProduct.price) {
-      return res.status(400).send("Product and price required");
+   const updatedUser = req.body;
+   if (!updatedUser.username || !updatedUser.password || !updatedUser.email) {
+      return res.status(400).send("Username, password and email required");
    }
 
-   exampleData[index] = { ...exampleData[index], ...updatedProduct };
-   res.json(exampleData[index]);
+   users[index] = { ...users[index], ...updatedUser };
+   res.json(users[index]);
 };
