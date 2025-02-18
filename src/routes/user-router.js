@@ -5,19 +5,21 @@ import {
   editUser,
   getUserById,
   getUsers,
-  login,
 } from '../controllers/user-controller.js';
+import { authenticateToken } from '../middlewares/authentication.js';
+import { isOwner, isAdmin } from '../middlewares/authorization.js';
+
 const userRouter = express.Router();
 
-userRouter.route('/')
-  .get(getUsers)
+userRouter
+  .route('/')
+  .get(authenticateToken, isAdmin, getUsers)
   .post(addUser);
 
-userRouter.route('/:id')
-  .get(getUserById)
-  .put(editUser)
-  .delete(deleteUser);
-
-userRouter.post('/login', login);
+userRouter
+  .route('/:id')
+  .get(authenticateToken, getUserById)
+  .put(authenticateToken, isOwner, editUser)
+  .delete(authenticateToken, isAdmin, deleteUser);
 
 export default userRouter;
